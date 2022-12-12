@@ -1,12 +1,12 @@
 from __future__ import annotations
 
 import numpy as np
-
 from scipy.spatial import KDTree
 
 try:
     from tqdm import tqdm
 except ImportError:
+
     def tqdm(iterator, *args, **kwargs):
         return iterator
 
@@ -15,7 +15,7 @@ SPATIAL_DIMS = frozenset({"x", "y", "z"})
 
 
 def vectors_from_tracks(
-    tracks: list[btrack.btypes.Tracklet], *, spatial_dims: str ="xy"
+    tracks: list, *, spatial_dims: str = "xy"
 ) -> np.ndarray:
     """Make an array of vectors from a list of tracks.
 
@@ -24,7 +24,7 @@ def vectors_from_tracks(
     tracks : list
         A list of tracks.
     spatial_dims : str, default = "xy"
-        The spatial dims to use
+        The spatial dimensions to use.
 
     Returns
     -------
@@ -38,12 +38,14 @@ def vectors_from_tracks(
 
     vectors = []
     for track in tracks:
-        track_data = [track.t,] + [getattr(track, d) for d in spatial_dims]
+        track_data = [
+            track.t,
+        ] + [getattr(track, d) for d in spatial_dims]
         track_arr = np.stack(track_data, axis=-1)
         d = np.diff(track_arr, n=1, axis=0)
 
         # scale the vector by dt
-        d[:, 1:] = d[:, 1:] * (1. / d[:, 0:1])
+        d[:, 1:] = d[:, 1:] * (1.0 / d[:, 0:1])
 
         # make the vector as [x, y, u, v]
         vec = np.concatenate(
@@ -51,24 +53,20 @@ def vectors_from_tracks(
                 track_arr[:-1, 1:],
                 d[:, 1:],
             ],
-            axis = -1
+            axis=-1,
         )
         vectors.append(vec)
     return np.concatenate(vectors, axis=0)
 
 
 def _calculate_shepard_weights(
-    x: np.ndarray,
-    xy: np.ndarray,
-    max_radius: float,
-    power: int
+    x: np.ndarray, xy: np.ndarray, max_radius: float, power: int
 ) -> np.ndarray:
     """Calculate Shepard weights."""
     d_xy = xy - np.broadcast_to(x, xy.shape)
     d = np.linalg.norm(d_xy, axis=-1)
     weights = np.power(
-        np.clip(max_radius - d, 0, np.inf) / (max_radius * d),
-        power
+        np.clip(max_radius - d, 0, np.inf) / (max_radius * d), power
     )
     return weights
 
