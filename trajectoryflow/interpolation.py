@@ -107,6 +107,12 @@ def shepard_interp(
         An array of interpolated vectors.
     """
 
+    if vectors.ndim != 2 or vectors.shape[-1] % 2 != 0:
+        raise ValueError("``vectors`` must be a 2D array.")
+
+    if grid.ndim != 2:
+        raise ValueError("``grid`` must be a 2D array.")
+
     xy, uv = np.split(vectors, 2, axis=1)
     tree = KDTree(xy)
     queries = tree.query_ball_point(grid, max_radius)
