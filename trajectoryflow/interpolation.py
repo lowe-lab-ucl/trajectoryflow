@@ -61,12 +61,18 @@ def vectors_from_tracks(
     return np.concatenate(vectors, axis=0)
 
 
+def _calculate_distance_matrix(x: np.ndarray, xy: np.ndarray) -> np.ndarray:
+    """Calculate a Euclidean distance matrix."""
+    d_xy = xy - np.broadcast_to(x, xy.shape)
+    d = np.linalg.norm(d_xy, axis=-1)
+    return d
+
+
 def _calculate_shepard_weights(
     x: np.ndarray, xy: np.ndarray, max_radius: float, power: int
 ) -> np.ndarray:
     """Calculate Shepard weights."""
-    d_xy = xy - np.broadcast_to(x, xy.shape)
-    d = np.linalg.norm(d_xy, axis=-1)
+    d = _calculate_distance_matrix(x, xy)
     weights = np.power(
         np.clip(max_radius - d, 0, np.inf) / (max_radius * d), power
     )
