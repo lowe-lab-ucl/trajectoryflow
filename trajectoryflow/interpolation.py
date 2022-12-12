@@ -97,7 +97,7 @@ def shepard_interp(
         An array of points (NxD), where D is the number of spatial dimenisons,
         at which to interpolate the vector field.
     max_radius : float
-        The maximum radius over which to interpolate. In unites of the data.
+        The maximum radius over which to interpolate. In units of the data.
     power : int
         An exponent used to scale the Shepard weights.
 
