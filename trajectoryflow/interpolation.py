@@ -34,7 +34,9 @@ def vectors_from_tracks(
     """
 
     if not all(d in SPATIAL_DIMS for d in spatial_dims):
-        raise ValueError
+        raise ValueError(
+            f"Spatial dimensions ``{spatial_dims}`` not recognised."
+        )
 
     vectors = []
     for track in tracks:
