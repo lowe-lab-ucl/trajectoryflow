@@ -1,1 +1,1 @@
-from .interpolation import vectors_from_tracks, shepard_interp
+from .interpolation import shepard_interp, vectors_from_tracks
